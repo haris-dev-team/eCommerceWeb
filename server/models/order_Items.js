@@ -25,9 +25,6 @@ const orderItemSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "users",
   },
-  DeliveryData: {
-    type: Date,
-  },
 });
 
 const OrderItems = mongoose.model("orderItem", orderItemSchema);
