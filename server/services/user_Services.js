@@ -52,6 +52,7 @@ const getUserProfileByToken = async (token) => {
     if (!user) {
       throw new Error("User not found with id");
     }
+    return user;
   } catch (error) {
     throw new Error(error.message);
   }
