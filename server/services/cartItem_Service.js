@@ -54,7 +54,6 @@ const findCartItemById = async (cartItemId) => {
 };
 
 module.exports = {
-  createCartItem,
   updateCartItem,
   removeCartItem,
   findCartItemById,
