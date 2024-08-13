@@ -12,7 +12,7 @@ const createCart = async (user) => {
   }
 };
 
-const findUserCart = async (userId) => {
+const findUserCarts = async (userId) => {
   try {
     const cart = await Cart.findOne({ user: userId });
     const cartItems = await CartItem.find({ cart: cart._id }).populate(
@@ -71,4 +71,4 @@ const addCartItem = async (userId, req) => {
   }
 };
 
-module.exports = { createCart, addCartItem, findUserCart };
+module.exports = { createCart, addCartItem, findUserCarts };

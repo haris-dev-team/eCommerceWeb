@@ -58,7 +58,7 @@ const updateProduct = async (productId, reqData) => {
   return await Product.findByIdAndUpdate(productId, reqData);
 };
 
-const finddProductById = async (id) => {
+const findProductById = async (id) => {
   const product = await Product.findById(id).populate("category").exec();
 
   if (!product) {
@@ -134,5 +134,15 @@ const getAllProducts = async (reqQuery) => {
 
 const createMultipleProducts = async (products) => {
   for (let product of products) {
+    await createProduct(product);
   }
+};
+
+module.exports = {
+  createProduct,
+  createMultipleProducts,
+  getAllProducts,
+  deleteProduct,
+  updateProduct,
+  findProductById,
 };
