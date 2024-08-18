@@ -14,26 +14,33 @@ const createCart = async (user) => {
 
 const findUserCarts = async (userId) => {
   try {
-    const cart = await Cart.findOne({ user: userId });
-    const cartItems = await CartItem.find({ cart: cart._id }).populate(
-      "product"
-    );
+    let cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      // If no cart found, create a new cart for the user
+      cart = new Cart({ user: userId });
+      await cart.save(); // Save the newly created cart
+    }
+
+    const cartItems = await CartItem.find({ cart: cart._id });
 
     cart.cartItems = cartItems;
 
     let totalPrice = 0;
-    let disocountedPrice = 0;
+    let discountedPrice = 0;
     let totalItem = 0;
 
     for (let cartItem of cart.cartItems) {
       totalPrice += cartItem.price;
-      disocountedPrice += cartItem.disocountedPrice;
+      discountedPrice += cartItem.discountedPrice;
       totalItem += cartItem.quantity;
     }
 
     cart.totalPrice = totalPrice;
     cart.totalItem = totalItem;
-    cart.discount = totalPrice - disocountedPrice;
+    cart.discount = totalPrice - discountedPrice;
+
+    return cart; // Return the cart with updated values
   } catch (error) {
     throw new Error(error.message);
   }
@@ -42,12 +49,15 @@ const findUserCarts = async (userId) => {
 const addCartItem = async (userId, req) => {
   try {
     const cart = await Cart.findOne({ user: userId });
+    if (!cart) {
+      throw new Error("No cart found for this user.");
+    }
     const product = await Product.findById(req.productId);
 
     const isPresent = await CartItem.findOne({
       cart: cart._id,
       product: product._id,
-      userId,
+      userId: userId,
     });
 
     if (!isPresent) {

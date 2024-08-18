@@ -1,23 +1,40 @@
+const { CHAR_LEFT_ANGLE_BRACKET } = require("picomatch/lib/constants");
 const Address = require("../models/address_Model");
 const Order = require("../models/order");
-const { findUserCart } = require("./cart_Service");
+const OrderItems = require("../models/order_Items");
+const { findUserCarts } = require("./cart_Service");
 
 const createOrder = async (user, shippAddress) => {
   let address;
+
+  // Check if shipping address exists by ID
   if (shippAddress._id) {
-    let existAddress = await Address.findbyId(shippAddress._id);
+    let existAddress = await Address.findById(shippAddress._id);
+    if (!existAddress) throw new Error("Address not found");
     address = existAddress;
   } else {
+    // Create a new address if it doesn't exist
     address = new Address(shippAddress);
     address.user = user;
     await address.save();
+
+    // Ensure user.addresses is an array
+    if (!user.addresses) {
+      user.addresses = [];
+    }
+
     user.addresses.push(address);
     await user.save();
   }
-  const cart = await findUserCart(user._id);
+
+  // Retrieve user cart
+  const cart = await findUserCarts(user._id);
+  if (!cart) throw new Error("Cart not found");
+
   const orderItems = [];
+
   for (const item of cart.cartItems) {
-    const orderItem = new orderItems({
+    const orderItem = new OrderItems({  // Use OrderItem instead of OrderItems
       price: item.price,
       product: item.product,
       quantity: item.quantity,
@@ -25,9 +42,12 @@ const createOrder = async (user, shippAddress) => {
       userId: item.userId,
       discountedPrice: item.discountedPrice,
     });
+
     const createdOrderItem = await orderItem.save();
     orderItems.push(createdOrderItem);
   }
+
+  // Create the order
   const createdOrder = new Order({
     user,
     orderItems,
@@ -37,9 +57,12 @@ const createOrder = async (user, shippAddress) => {
     totalItem: cart.totalItem,
     shippingAddress: address,
   });
-  const saveOrder = await createdOrder.save();
-  await saveOrder();
+
+  // Save the order
+  await createdOrder.save();
+  return createdOrder;
 };
+
 
 const placeOrder = async (orderId) => {
   const order = await findOrderById(orderId);

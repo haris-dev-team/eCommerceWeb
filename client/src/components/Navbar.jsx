@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deepPurple } from "@mui/material/colors";
 import TextField from "@mui/material/TextField";
 import { navigation } from "../utils/Navigation";
+import AuthModel from "../pages/Auth/AuthModel";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -26,7 +27,6 @@ export default function Navigation() {
   const [anchorEl, setAnchorEl] = useState(null);
   const openUserMenu = Boolean(anchorEl);
   const location = useLocation();
-
 
   const handleUserClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -46,7 +46,6 @@ export default function Navigation() {
     navigate(`/${category.id}/${section.id}/${item.id}`);
     close();
   };
-
 
   const handleMyOrderClick = () => {
     // handleCloseUserMenu();
@@ -385,24 +384,24 @@ export default function Navigation() {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {/* {auth.user ? ( */}
-                    <div>
-                      <Avatar
-                        className="text-white"
-                        onClick={handleUserClick}
-                        aria-controls={open ? "basic-menu" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? "true" : undefined}
-                        // onClick={handleUserClick}
-                        sx={{
-                          bgcolor: deepPurple[500],
-                          color: "white",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {/* {auth.user?.firstName[0].toUpperCase()} */}
-                      </Avatar>
-                      {/* <Button
+                  {false ? (
+                  <div>
+                    <Avatar
+                      className="text-white"
+                      onClick={handleUserClick}
+                      aria-controls={open ? "basic-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? "true" : undefined}
+                      // onClick={handleUserClick}
+                      sx={{
+                        bgcolor: deepPurple[500],
+                        color: "white",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {/* {auth.user?.firstName[0].toUpperCase()} */}
+                    </Avatar>
+                    <Button
                         id="basic-button"
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
@@ -410,32 +409,32 @@ export default function Navigation() {
                         onClick={handleUserClick}
                       >
                         Dashboard
-                      </Button> */}
-                      <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={openUserMenu}
-                        onClose={handleCloseUserMenu}
-                        MenuListProps={{
-                          "aria-labelledby": "basic-button",
-                        }}
-                      >
-                        <MenuItem onClick={handleMyOrderClick}>
-                          {/* {auth.user?.role === "ROLE_ADMIN"
+                      </Button>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={openUserMenu}
+                      onClose={handleCloseUserMenu}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                    >
+                      <MenuItem onClick={handleMyOrderClick}>
+                        {/* {auth.user?.role === "ROLE_ADMIN"
                             ? "Admin Dashboard"
                             : "My Orders"} */}
-                        </MenuItem>
-                        <MenuItem >Logout</MenuItem>
-                      </Menu>
-                    </div>
-                  {/* // ) : ( */}
-                    <Button
-                      onClick={handleOpen}
-                      className="text-sm font-medium text-gray-700 hover:text-gray-800"
-                    >
-                      Signin
-                    </Button>
-                  {/* // )} */}
+                      </MenuItem>
+                      <MenuItem>Logout</MenuItem>
+                    </Menu>
+                  </div>
+                   ) : (
+                  <Button
+                    onClick={handleOpen}
+                    className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                  >
+                    Signin
+                  </Button>
+                  )}
                 </div>
 
                 {/* Search */}
@@ -474,7 +473,7 @@ export default function Navigation() {
           </div>
         </nav>
       </header>
-      {/* <AuthModal handleClose={handleClose} open={openAuthModal} /> */}
+      <AuthModel handleClose={handleClose} open={openAuthModal} />
     </div>
   );
 }

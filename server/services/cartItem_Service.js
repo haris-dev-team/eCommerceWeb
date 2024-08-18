@@ -11,10 +11,13 @@ const updateCartItem = async (userId, cartItemId, cartItemData) => {
     if (!user) {
       throw new Error("User not found");
     }
-    if (user._id.toString() === userId.toString()) {
+    // console.log(item.quantity, item.product.price);
+
+    if (user._id.toString() == userId.toString()) {
       item.quantity = cartItemData.quantity;
       item.price = item.quantity * item.product.price;
-      item.dicountedPrice = item.product.discountedPrice;
+      item.discountedPrice = item.product.discountedPrice;
+      // console.log(item.quantity * item.product.price);
       const updateCartItem = await item.save();
       return updateCartItem;
     } else {
@@ -30,6 +33,8 @@ const removeCartItem = async (userId, cartItemId) => {
     const cartItem = await findCartItemById(cartItemId);
     const user = await findUserById(userId);
 
+    console.log(user._id.toString(), cartItem.userId.toString());
+
     if (user._id.toString() == cartItem.userId.toString()) {
       await CartItem.findByIdAndDelete(cartItemId);
     } else {
@@ -42,7 +47,7 @@ const removeCartItem = async (userId, cartItemId) => {
 
 const findCartItemById = async (cartItemId) => {
   try {
-    const cartItem = await findCartItemById(cartItemId);
+    const cartItem = await CartItem.findById(cartItemId).populate("product");
     if (cartItem) {
       return cartItem;
     } else {
