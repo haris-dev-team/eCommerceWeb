@@ -17,6 +17,8 @@ import Order_Details from "../../pages/order/Order_Details";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />}>
+      <Route path="/login" element={<Home />} />
+      <Route path="/register" element={<Home />} />
       <Route path="/" element={<Home />} />
       <Route path="/prdoucts" element={<Product />} />
       <Route path="/product/:productId" element={<Product_Details />} />
