@@ -15,6 +15,7 @@ import { deepPurple } from "@mui/material/colors";
 import TextField from "@mui/material/TextField";
 import { navigation } from "../utils/Navigation";
 import AuthModel from "../pages/Auth/AuthModel";
+import { getUser, logout } from "../State/Auth/Action";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -27,7 +28,9 @@ export default function Navigation() {
   const [anchorEl, setAnchorEl] = useState(null);
   const openUserMenu = Boolean(anchorEl);
   const location = useLocation();
-
+  const { auth } = useSelector((store) => store);
+  const jwt = localStorage.getItem("jwt");
+  const dispatch = useDispatch();
   const handleUserClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -47,11 +50,34 @@ export default function Navigation() {
     close();
   };
 
+  useEffect(
+    (jwt) => {
+      dispatch(getUser(jwt));
+    },
+    [jwt, auth.jwt]
+  );
+  useEffect(() => {
+    console.log(auth);
+    if (auth.user) {
+      handleClose();
+    } else {
+      console.log("user not found!");
+    }
+    if (location.pathname == "/login" || location.pathname == "/register") {
+      navigate(-1);
+    }
+  }, [, auth.user]);
+
   const handleMyOrderClick = () => {
     // handleCloseUserMenu();
     // auth.user?.role === "ROLE_ADMIN"
     //   ? navigate("/admin")
     //   : navigate("/account/order");
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    handleCloseUserMenu();
   };
 
   return (
@@ -384,56 +410,48 @@ export default function Navigation() {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {false ? (
-                  <div>
-                    <Avatar
-                      className="text-white"
-                      onClick={handleUserClick}
-                      aria-controls={open ? "basic-menu" : undefined}
-                      aria-haspopup="true"
-                      aria-expanded={open ? "true" : undefined}
-                      // onClick={handleUserClick}
-                      sx={{
-                        bgcolor: deepPurple[500],
-                        color: "white",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {/* {auth.user?.firstName[0].toUpperCase()} */}
-                    </Avatar>
-                    <Button
-                        id="basic-button"
+                  {auth.user ? (
+                    <div>
+                      <Avatar
+                        className="text-white"
+                        onClick={handleUserClick}
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
-                        onClick={handleUserClick}
+                        // onClick={handleUserClick}
+                        sx={{
+                          bgcolor: deepPurple[500],
+                          color: "white",
+                          cursor: "pointer",
+                        }}
                       >
-                        Dashboard
-                      </Button>
-                    <Menu
-                      id="basic-menu"
-                      anchorEl={anchorEl}
-                      open={openUserMenu}
-                      onClose={handleCloseUserMenu}
-                      MenuListProps={{
-                        "aria-labelledby": "basic-button",
-                      }}
-                    >
-                      <MenuItem onClick={handleMyOrderClick}>
-                        {/* {auth.user?.role === "ROLE_ADMIN"
+                        {auth.user.user?.firstName[0].toUpperCase()}
+                      </Avatar>
+
+                      <Menu
+                        id="basic-menu"
+                        anchorEl={anchorEl}
+                        open={openUserMenu}
+                        onClose={handleCloseUserMenu}
+                        MenuListProps={{
+                          "aria-labelledby": "basic-button",
+                        }}
+                      >
+                        <MenuItem onClick={handleMyOrderClick}>
+                          {/* {auth.user?.role === "ROLE_ADMIN"
                             ? "Admin Dashboard"
                             : "My Orders"} */}
-                      </MenuItem>
-                      <MenuItem>Logout</MenuItem>
-                    </Menu>
-                  </div>
-                   ) : (
-                  <Button
-                    onClick={handleOpen}
-                    className="text-sm font-medium text-gray-700 hover:text-gray-800"
-                  >
-                    Signin
-                  </Button>
+                        </MenuItem>
+                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                      </Menu>
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={handleOpen}
+                      className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                    >
+                      Signin
+                    </Button>
                   )}
                 </div>
 

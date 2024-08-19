@@ -3,14 +3,14 @@ const { createUser, findUserByEmail } = require("../services/user_Services");
 const bcrypt = require("bcryptjs");
 const register = async (req, res) => {
   try {
-    const user = createUser(req.body);
+    const user = await createUser(req.body);
     const jwt = generateToken(user._id);
 
     return res
       .status(200)
-      .json({ success: true, jwt, message: "register Success!" });
+      .json({ success: true, jwt, msg: "register Success!" });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, msg: error.message });
   }
 };
 

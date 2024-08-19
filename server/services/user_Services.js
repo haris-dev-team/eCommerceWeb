@@ -21,7 +21,7 @@ const createUser = async (userData) => {
 
 const findUserById = async (userId) => {
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).exec();
     if (!user) {
       throw new Error("User not found with id");
     }
@@ -44,14 +44,17 @@ const findUserByEmail = async (email) => {
 };
 
 const getUserProfileByToken = async (token) => {
+  console.log("Token for user profile:", token);
   try {
     const userId = getUserIdFromToken(token);
+    console.log("Looking for user with ID:", userId);
 
     const user = await findUserById(userId);
-
     if (!user) {
+      console.log("No user found with this ID in the database");
       throw new Error("User not found with id");
     }
+
     return user;
   } catch (error) {
     throw new Error(error.message);

@@ -15,7 +15,7 @@ const Register = () => {
       dispatch(getUser(jwt));
     }
   }, [jwt, auth.jwt]);
-
+ 
   const onsubmitHandle = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -27,7 +27,7 @@ const Register = () => {
       password: data.get("password"),
     };
     dispatch(register(userData));
-    console.log(userData);
+    console.log("userData",userData);
   };
   return (
     <div>
@@ -93,9 +93,9 @@ const Register = () => {
           <Button
             className="ml-5"
             size="small"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/login")}
           >
-            Register
+            Login
           </Button>
         </div>
       </div>
