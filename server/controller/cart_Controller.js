@@ -10,9 +10,10 @@ const findUserCart = async (req, res) => {
   }
 };
 const addItemToCart = async (req, res) => {
-  const user = await req.user;
+  const user = req.user;
+
   try {
-    const cartItem = await addCartItem(user.id, req.body);
+    const cartItem = await addCartItem(user._id, req.body);
     return res.status(200).json({ success: true, msg: cartItem });
   } catch (error) {
     return res.status(500).json({ success: false, msg: error.message });

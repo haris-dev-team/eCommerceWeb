@@ -77,6 +77,7 @@ const updateProduct = async (productId, reqData) => {
 const findProductById = async (id) => {
   const product = await Product.findById(id).populate("category").exec();
 
+
   if (!product) {
     throw new Error("Product not Fonud With Id");
   }

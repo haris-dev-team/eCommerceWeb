@@ -38,6 +38,7 @@ const updateProducts = async (req, res) => {
 
 const findProductsById = async (req, res) => {
   const productId = req.params.id;
+  console.log("djfgh",productId);
   try {
     const product = await findProductById(productId);
     return res.status(200).json({ success: true, msg: product });

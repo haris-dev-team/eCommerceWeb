@@ -1,7 +1,7 @@
 const CartItem = require("../models/cart_Item_Model");
 const Cart = require("../models/cart_Model");
 const Product = require("../models/product");
-
+const mongoose = require("mongoose");
 const createCart = async (user) => {
   try {
     const cart = new Cart({ user });
@@ -47,10 +47,16 @@ const findUserCarts = async (userId) => {
 };
 
 const addCartItem = async (userId, req) => {
+  console.log("user---==", userId);
   try {
-    const cart = await Cart.findOne({ user: userId });
+    let cart = await Cart.findOne({ user: userId });
     if (!cart) {
-      throw new Error("No cart found for this user.");
+      cart = new Cart({ user: userId });
+      await cart.save();
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(req.productId)) {
+      throw new Error("Invalid product ID.");
     }
     const product = await Product.findById(req.productId);
 
@@ -60,7 +66,11 @@ const addCartItem = async (userId, req) => {
       userId: userId,
     });
 
-    if (!isPresent) {
+    if (isPresent) {
+      isPresent.quantity += 1;
+      await isPresent.save();
+      return "Item quantity updated in cart";
+    } else {
       const cartItem = new CartItem({
         product: product._id,
         cart: cart._id,

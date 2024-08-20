@@ -1,5 +1,5 @@
-const { api } = require("../../config/Apis/apiConfig");
-const {
+import { api } from "../../config/Apis/apiConfig";
+import {
   ADD_ITEM_TO_CART_REQUEST,
   ADD_ITEM_TO_CART_SUCCESS,
   ADD_ITEM_TO_CART_FAILURE,
@@ -12,13 +12,14 @@ const {
   GET_CART_REQUEST,
   GET_CART_SUCCESS,
   GET_CART_FAILURE,
-} = require("./ActionType");
+} from "./ActionType";
 
-export const get = () => async (dispatch) => {
+export const getCart = () => async (dispatch) => {
   dispatch({ type: GET_CART_REQUEST });
   try {
     const { data } = await api.get(`/api/cart/`);
     dispatch({ type: GET_CART_SUCCESS, payload: data });
+    console.log("cart", data);
   } catch (error) {
     dispatch({ type: GET_CART_FAILURE, payload: error.message });
   }
@@ -27,9 +28,11 @@ export const get = () => async (dispatch) => {
 export const addItemToCart = (reqData) => async (dispatch) => {
   dispatch({ type: ADD_ITEM_TO_CART_REQUEST });
   try {
-    const { data } = await api.put("/api/cart/add", reqData.data);
+    const { data } = await api.put("/api/cart/add", reqData);
+    console.log("add item to cart <=-=> ", data);
     dispatch({ type: ADD_ITEM_TO_CART_SUCCESS, payload: data });
   } catch (error) {
+    console.log("error=====", error);
     dispatch({ type: ADD_ITEM_TO_CART_FAILURE, payload: error.message });
   }
 };

@@ -8,6 +8,7 @@ import Home_Section_Card from "../components/Cards/Home_Section_Card";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { findProductsById } from "../State/Product/Action";
+import { addItemToCart } from "../State/Cart/Action";
 
 const product = {
   name: "Basic Tee 6-Pack",
@@ -69,12 +70,24 @@ export default function Product_Details() {
   const params = useParams();
   const dispatch = useDispatch();
   const handleAddToCart = () => {
-    navigate("/cart");
+    const data = { productId: params.productId, size: selectedSize.name };
+    console.log("data_", data);
+    if (data) {
+      dispatch(addItemToCart(data));
+      navigate("/cart");
+    } else {
+      console.log("error error cart cart");
+    }
   };
   const store = useSelector((state) => state);
-  console.log(store.product);
+  console.log("details", store.product.product);
   useEffect(() => {
-    dispatch(findProductsById(params.productId));
+    console.log("params", params.productId);
+    if (params.productId) {
+      dispatch(findProductsById(params));
+    } else {
+      console.log("productId is undefined or null");
+    }
   }, [params.productId]);
 
   return (
@@ -125,13 +138,16 @@ export default function Product_Details() {
             <div className="overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem]">
               <img
                 alt={product.images[0].alt}
-                src={product.images[0].src}
+                src={store.product.product.msg?.imageUrl}
                 className="h-full w-full object-cover object-center"
               />
             </div>
             <div className="flex flex-wrap space-x-5 justify-center">
-              {product.images.map((item) => (
-                <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg max-w-[5rem] max-h-[5rem] mt-4">
+              {product.images.map((item, i) => (
+                <div
+                  key={i}
+                  className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg max-w-[5rem] max-h-[5rem] mt-4"
+                >
                   <img
                     alt={item.alt}
                     src={item.src}
@@ -146,10 +162,10 @@ export default function Product_Details() {
           <div className="lg:col-span-1 max-auto max-w-2xl px-4 pb-16 sm:px-6 lg:max-w-7xl lg:px-8 lg:pb-24">
             <div className="lg:col-span-2 ">
               <h1 className="text-2xl lg:text-xl font-semibold text-gray-900">
-                Universaloutfit
+                {store.product.product.msg?.brand}
               </h1>
               <h1 className="text-lg lg:text-xl text-gray-900 opacity-60 pt-1">
-                Casual Puff Sleeves Solid Women White Top
+                {store.product.product.msg?.title}
               </h1>
             </div>
 
@@ -158,9 +174,15 @@ export default function Product_Details() {
               <h2 className="sr-only">Product information</h2>
 
               <div className="flex space-x-5 items-center text-lg lg:text-xl text-gray-900 mt-6">
-                <p className="font-semibold">$199</p>
-                <p className="opacity-50 line-through">$211</p>
-                <p className="text-green-600 font-semibold">5% off</p>
+                <p className="font-semibold">
+                  {store.product.product.msg?.discountedPrice}
+                </p>
+                <p className="opacity-50 line-through">
+                  {store.product.product.msg?.price}
+                </p>
+                <p className="text-green-600 font-semibold">
+                  {store.product.product.msg?.discountedPersent}
+                </p>
               </div>
 
               {/* Reviews */}
@@ -290,8 +312,10 @@ export default function Product_Details() {
             <Grid container spacing={7}>
               <Grid item xs={7}>
                 <div className="space-y-5">
-                  {[1, 1, 1].map((item) => (
-                    <ProuctReviewCard />
+                  {[1, 1, 1].map((item, i) => (
+                    <div key={i}>
+                      <ProuctReviewCard />
+                    </div>
                   ))}
                 </div>
               </Grid>
@@ -383,8 +407,10 @@ export default function Product_Details() {
         <section className="pt-10">
           <h1 className="py-5 text-xl font-bold">Similar Products</h1>
           <div className="flex flex-wrap space-y-5">
-            {mens_Kurta.map((item) => (
-              <Home_Section_Card product={item} />
+            {mens_Kurta.map((item, i) => (
+              <div key={i}>
+                <Home_Section_Card product={item} />
+              </div>
             ))}
           </div>
         </section>

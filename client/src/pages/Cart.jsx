@@ -1,19 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Cart_Item from "../components/cart/Cart_Item";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getCart } from "../State/Cart/Action";
 
 const Cart = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleCheckOut = () => {
     navigate("/check-out?step=2");
   };
+  useEffect(() => {
+    dispatch(getCart())
+  },[])
   return (
     <div>
       <div className="lg:grid grid-cols-3 lg:px-16 relative">
         <div className="col-span-2">
-          {[1, 1, 1, 1, 1].map((item) => (
-            <Cart_Item />
+          {[1, 1, 1, 1, 1].map((item, i) => (
+            <div key={i}>
+              <Cart_Item />
+            </div>
           ))}
         </div>
         <div className="px-5 sticky top-0 h-[100vh] mt-5 lg:mt-0">
