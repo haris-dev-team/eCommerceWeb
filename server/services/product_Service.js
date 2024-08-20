@@ -98,6 +98,7 @@ const getAllProducts = async (reqQuery) => {
   } = reqQuery;
 
   try {
+    pageNumber = Math.max(pageNumber, 1);
     let query = Product.find().populate("category");
 
     // Filter by category
