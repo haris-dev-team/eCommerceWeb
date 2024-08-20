@@ -23,13 +23,16 @@ const getUserProfile = async (req, res) => {
       return res.status(404).json({ message: "User Not Found!" });
     }
 
-    // Respond with user profile
+    const { password, ...users } = user._doc;
+
     return res.status(200).json({ success: true, user });
   } catch (error) {
     console.error(error.message); // Log the error for debugging
-    return res
-      .status(500)
-      .json({ message: "Internal Server Error", success: false,error:error.message });
+    return res.status(500).json({
+      message: "Internal Server Error",
+      success: false,
+      error: error.message,
+    });
   }
 };
 

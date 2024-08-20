@@ -1,10 +1,11 @@
-const {
+import {
   FIND_PRODUCT_BY_REQUEST,
   FIND_PRODUCT_BY_ID_REQUEST,
   FIND_PRODUCT_BY_SUCCESS,
   FIND_PRODUCT_BY_ID_SUCCESS,
   FIND_PRODUCT_BY_FAILURE,
-} = require("./ActionType");
+  FIND_PRODUCT_BY_ID_FAILURE,
+} from "./ActionType";
 
 const initialState = {
   products: [],
@@ -26,9 +27,9 @@ export const customerProductReducer = (state = initialState, action) => {
       };
     case FIND_PRODUCT_BY_ID_SUCCESS:
       return { ...state, product: action.payload, loading: false, error: null };
-      case FIND_PRODUCT_BY_FAILURE:
-        case FIND_PRODUCT_BY_ID_FAILURE
-        return { ...state, loading: false, error: action.payload };
+    case FIND_PRODUCT_BY_FAILURE:
+    case FIND_PRODUCT_BY_ID_FAILURE:
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }

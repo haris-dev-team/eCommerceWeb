@@ -1,20 +1,4 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-"use client";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -44,7 +28,9 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { findProducts } from "../State/Product/Action";
 const sortOptions = [
   { name: "Price: Low to High", href: "#", current: false },
   { name: "Price: High to Low", href: "#", current: false },
@@ -58,6 +44,18 @@ export default function Product() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const params = useParams();
+  const decodedQueryString = decodeURIComponent(location.search);
+  const searchParamms = new URLSearchParams(decodedQueryString);
+  const colorValue = searchParamms.get("color");
+  const sizeValue = searchParamms.get("size");
+  const priceValue = searchParamms.get("price");
+  const discountValue = searchParamms.get("discount");
+  const stockValue = searchParamms.get("stock");
+  const pageNumber = searchParamms.get("page") || 1;
+  const sortValue = searchParamms.get("sort");
+
   const handleFilter = (value, sectionId) => {
     const searchParamms = new URLSearchParams(location.search);
 
@@ -86,6 +84,33 @@ export default function Product() {
     const query = searchParamms.toString();
     navigate({ search: `?${query}` });
   };
+
+  useEffect(() => {
+    const [minPrice, maxPrice] =
+      priceValue === null ? [0, 0] : priceValue.split("-").map(Number);
+    const data = {
+      category: params.levelThree,
+      colors: colorValue | [],
+      sizes: sizeValue | [],
+      minPrice,
+      maxPrice,
+      minDiscount: discountValue || 0,
+      sort: sortValue || "price_low",
+      pageNumber: pageNumber - 1,
+      pageSize: 10,
+      stock: stockValue,
+    };
+    dispatch(findProducts(data));
+  }, [
+    params.levelThree,
+    colorValue,
+    sizeValue,
+    priceValue,
+    discountValue,
+    sortValue,
+    pageNumber,
+    stockValue,
+  ]);
 
   return (
     <div className="bg-white">
@@ -206,7 +231,7 @@ export default function Product() {
                             option.current
                               ? "font-medium text-gray-900"
                               : "text-gray-500",
-                            "block px-4 py-2 text-sm data-[focus]:bg-gray-100",
+                            "block px-4 py-2 text-sm data-[focus]:bg-gray-100"
                           )}
                         >
                           {option.name}
