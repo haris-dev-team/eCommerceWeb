@@ -1,34 +1,13 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    theme: {
-      extend: {
-        gridTemplateRows: {
-          '[auto,auto,1fr]': 'auto auto 1fr',
-        },
-      },
-    },
-    plugins: [
-      // ...
-      require('@tailwindcss/aspect-ratio'),
-    ],
-  }
-  ```
-*/
-"use client";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { Box, Button, Grid, LinearProgress, Rating } from "@mui/material";
 import ProuctReviewCard from "../components/Cards/ProuctReviewCard";
 import { mens_Kurta } from "../utils/men_Kurta";
 import Home_Section_Card from "../components/Cards/Home_Section_Card";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { findProductsById } from "../State/Product/Action";
 
 const product = {
   name: "Basic Tee 6-Pack",
@@ -85,12 +64,18 @@ function classNames(...classes) {
 }
 
 export default function Product_Details() {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
+  const [selectedSize, setSelectedSize] = useState("");
   const navigate = useNavigate();
+  const params = useParams();
+  const dispatch = useDispatch();
   const handleAddToCart = () => {
-    navigate("/cart")
+    navigate("/cart");
   };
+  const store = useSelector((state) => state);
+  console.log(store.product);
+  useEffect(() => {
+    dispatch(findProductsById(params.productId));
+  }, [params.productId]);
 
   return (
     <div className="bg-white lg:px-20">

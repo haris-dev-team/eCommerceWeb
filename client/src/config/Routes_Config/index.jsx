@@ -23,7 +23,7 @@ const router = createBrowserRouter(
       <Route path="/prdoucts" element={<Product />} />
       <Route path="/product/:productId" element={<Product_Details />} />
       <Route path="/cart" element={<Cart />} />
-      <Route path="/:levelOne/:levelTwo/:levelThree" element={<Product />} />
+      <Route path="/:lavelOne/:lavelTwo/:lavelThree" element={<Product />} />
       <Route path="/check-out" element={<Checkout />} />
       <Route path="/account/order" element={<Order />} />
       <Route path="/account/order/:orderId" element={<Order_Details />} />

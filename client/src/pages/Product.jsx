@@ -29,8 +29,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { findProducts } from "../State/Product/Action";
+import { Pagination } from "@mui/material";
 const sortOptions = [
   { name: "Price: Low to High", href: "#", current: false },
   { name: "Price: High to Low", href: "#", current: false },
@@ -45,6 +46,9 @@ export default function Product() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { product } = useSelector((store) => store);
+  // console.log(product.products.msg.content);
+
   const params = useParams();
   const decodedQueryString = decodeURIComponent(location.search);
   const searchParamms = new URLSearchParams(decodedQueryString);
@@ -84,25 +88,31 @@ export default function Product() {
     const query = searchParamms.toString();
     navigate({ search: `?${query}` });
   };
+  const handlePaginationChange = (event, value) => {
+    const searchParamms = new URLSearchParams(location.search);
+    searchParamms.set("page", value);
+    const query = searchParamms.toString();
+    navigate({ search: `?${query}` });
+  };
 
   useEffect(() => {
     const [minPrice, maxPrice] =
       priceValue === null ? [0, 0] : priceValue.split("-").map(Number);
     const data = {
-      category: params.levelThree,
-      colors: colorValue | [],
-      sizes: sizeValue | [],
-      minPrice,
-      maxPrice,
+      category: params.levelThree || "",
+      colors: colorValue || [],
+      sizes: sizeValue || [],
+      minPrice: minPrice || 0,
+      maxPrice: maxPrice || 100000,
       minDiscount: discountValue || 0,
       sort: sortValue || "price_low",
-      pageNumber: pageNumber,
+      pageNumber: pageNumber || 1,
       pageSize: 10,
-      stock: stockValue,
+      stock: stockValue || "in_stock",
     };
     dispatch(findProducts(data));
   }, [
-    params.levelThree,
+    params.lavelThree,
     colorValue,
     sizeValue,
     priceValue,
@@ -386,11 +396,22 @@ export default function Product() {
               {/* Product grid */}
               <div className="md:col-span-4 w-full">
                 <div className="flex flex-wrap justify-center bg-white py-5">
-                  {mens_Kurta.map((item) => (
+                  {/* {product.products.msg &&
+                    product.products.msg?.content? */}
+                  {product.products.msg?.content?.map((item) => (
                     <ProductCards product={item} />
                   ))}
                 </div>
               </div>
+            </div>
+          </section>
+          <section className="w-full px-[3.6rem]">
+            <div className="px-4 py-5 flex justify-center">
+              <Pagination
+                count={product.products.msg?.totalPages}
+                onChange={handlePaginationChange}
+                color="primary"
+              />
             </div>
           </section>
         </main>

@@ -4,41 +4,41 @@ const Product = require("../models/product");
 const createProduct = async (reqData) => {
   try {
     // Check or create top-level category
-    let topLevel = await Category.findOne({ name: reqData.topLevelCategory });
-    if (!topLevel) {
-      topLevel = new Category({
-        name: reqData.topLevelCategory,
-        level: 1,
+    let topLavel = await Category.findOne({ name: reqData.topLavelCategory });
+    if (!topLavel) {
+      topLavel = new Category({
+        name: reqData.topLavelCategory,
+        lavel: 1,
       });
-      await topLevel.save();
+      await topLavel.save();
     }
 
-    // Check or create second-level category
-    let secondLevel = await Category.findOne({
-      name: reqData.secondLevelCategory,
-      parentCategory: topLevel._id,
+    // Check or create second-lavel category
+    let secondLavel = await Category.findOne({
+      name: reqData.secondLavelCategory,
+      parentCategory: topLavel._id,
     });
-    if (!secondLevel) {
-      secondLevel = new Category({
-        name: reqData.secondLevelCategory,
-        parentCategory: topLevel._id,
-        level: 2,
+    if (!secondLavel) {
+      secondLavel = new Category({
+        name: reqData.secondLavelCategory,
+        parentCategory: topLavel._id,
+        lavel: 2,
       });
-      await secondLevel.save();
+      await secondLavel.save();
     }
 
-    // Check or create third-level category
-    let thirdLevel = await Category.findOne({
-      name: reqData.thirdLevelCategory,
-      parentCategory: secondLevel._id,
+    // Check or create third-lavel category
+    let thirdLavel = await Category.findOne({
+      name: reqData.thirdLavelCategory,
+      parentCategory: secondLavel._id,
     });
-    if (!thirdLevel) {
-      thirdLevel = new Category({
-        name: reqData.thirdLevelCategory,
-        parentCategory: secondLevel._id,
-        level: 3,
+    if (!thirdLavel) {
+      thirdLavel = new Category({
+        name: reqData.thirdLavelCategory,
+        parentCategory: secondLavel._id,
+        lavel: 3,
       });
-      await thirdLevel.save();
+      await thirdLavel.save();
     }
 
     // Create the product
@@ -53,7 +53,7 @@ const createProduct = async (reqData) => {
       price: reqData.price,
       sizes: reqData.size,
       quantity: reqData.quantity,
-      category: thirdLevel._id,
+      category: thirdLavel._id,
     });
 
     // Save the product and return it
@@ -98,7 +98,6 @@ const getAllProducts = async (reqQuery) => {
   } = reqQuery;
 
   try {
-    pageNumber = Math.max(pageNumber, 1);
     let query = Product.find().populate("category");
 
     // Filter by category
@@ -112,8 +111,6 @@ const getAllProducts = async (reqQuery) => {
         return { content: [], currentPage: 1, totalPages: 0 };
       }
     }
-
-    // Filter by color
     if (color) {
       const colorSet = new Set(
         color.split(",").map((c) => c.trim().toLowerCase())
@@ -132,12 +129,10 @@ const getAllProducts = async (reqQuery) => {
       }
     }
 
-    // Filter by price range
     if (minPrice !== undefined && maxPrice !== undefined) {
       query = query.where("discountedPrice").gte(minPrice).lte(maxPrice);
     }
 
-    // Filter by minimum discount
     if (minDiscount) {
       query = query.where("discountedPercent").gt(minDiscount);
     }
@@ -151,19 +146,25 @@ const getAllProducts = async (reqQuery) => {
       }
     }
 
-    // Sort by price
     if (sort) {
       const sortDirection = sort === "price_high" ? -1 : 1;
       query = query.sort({ discountedPrice: sortDirection });
     }
 
-    // Pagination
     const totalProducts = await Product.countDocuments(query);
+    console.log("Total products found:", totalProducts);
+
+    pageNumber = Math.max(pageNumber, 1);
+    pageSize = Math.max(pageSize, 1);
+
     const skip = (pageNumber - 1) * pageSize;
+
     query = query.skip(skip).limit(pageSize);
 
     const products = await query.exec();
     const totalPages = Math.ceil(totalProducts / pageSize);
+
+    console.log("Products fetched:", products.length);
 
     return { content: products, currentPage: pageNumber, totalPages };
   } catch (error) {
