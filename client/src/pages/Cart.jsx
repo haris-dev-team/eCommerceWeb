@@ -9,18 +9,18 @@ const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { cart } = useSelector((store) => store);
-  console.log("cart", cart.cart.msg);
+  // console.log("cart", cart.cart.msg);
   const handleCheckOut = () => {
     navigate("/check-out?step=2");
   };
   useEffect(() => {
     dispatch(getCart());
-  }, []);
+  }, [cart.updateCartItem, cart.deleteCartItem]);
   return (
     <div>
       <div className="lg:grid grid-cols-3 lg:px-16 relative">
         <div className="col-span-2">
-          {cart.cart.msg?.cartItems.map((item, i) => (
+          {cart.cart?.msg?.cartItems.map((item, i) => (
             <div key={i}>
               <Cart_Item item={item} />
             </div>
@@ -35,12 +35,12 @@ const Cart = () => {
             <div className="space-y-3 font-semibold px-5">
               <div className="flex justify-between pt-3 text-black">
                 <span>Price</span>
-                <span>${cart.cart.msg?.totalPrice}</span>
+                <span>${cart.cart?.msg?.totalPrice}</span>
               </div>
               <div className="flex justify-between pt-3 text-black">
                 <span>Discount</span>
                 <span className="text-green-600">
-                  -${cart.cart.msg?.discount}
+                  -${cart.cart?.msg?.discount}
                 </span>
               </div>
               <div className="flex justify-between pt-3 text-black">
@@ -48,7 +48,7 @@ const Cart = () => {
                 <span className="text-green-600">Free</span>
               </div>
               <div className="flex justify-between pt-3 text-black">
-                <span>{cart.cart.msg?.totalDiscountedPrice}</span>
+                <span>{cart.cart?.msg?.totalDiscountedPrice}</span>
                 <span classname="text-green-600">$718</span>
               </div>
             </div>

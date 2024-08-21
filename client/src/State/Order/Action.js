@@ -7,15 +7,16 @@ import {
   GET_ORDER_BY_ID_REQUEST,
   GET_ORDER_BY_ID_SUCCESS,
 } from "./ActionType";
-import axios from "axios";
 export const createOrder = (reqData) => async (dispatch) => {
   dispatch({ type: CREATE_ORDER_REQUEST });
   try {
     const { data } = await api.post(`/api/orders/`, reqData.address);
-    if (data.id) {
-      reqData.navigate({ search: `step=3&order_id=${data.id}` });
+    if (data.msg._id) {
+      reqData.navigate({ search: `step=3&order_id=${data.msg._id}` });
+    } else {
+      console.log("not found");
     }
-    console.log("created order - ", data);
+    console.log("cart created -- ", data.msg);
     dispatch({ type: CREATE_ORDER_SUCCESS, payload: data });
   } catch (error) {
     console.log("error - ", error);

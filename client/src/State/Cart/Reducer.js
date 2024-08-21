@@ -50,20 +50,13 @@ export const cartReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        cartItems: state.cartItems.filter(
-          (item) => item._id !== action.payload
-        ),
+        deleteCartItem: action.payload
       };
     case UPDATE_CART_ITEM_SUCCESS:
       return {
         ...state,
         loading: false,
-        cartItems: state.cartItems.map((item) => {
-          if (item._id === action.payload.id) {
-            return action.payload;
-          }
-          return item;
-        }),
+        updateCartItem: action.payload
       };
     case REMOVE_CART_ITEM_FAILURE:
     case UPDATE_CART_ITEM_FAILURE:

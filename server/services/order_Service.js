@@ -34,7 +34,8 @@ const createOrder = async (user, shippAddress) => {
   const orderItems = [];
 
   for (const item of cart.cartItems) {
-    const orderItem = new OrderItems({  // Use OrderItem instead of OrderItems
+    const orderItem = new OrderItems({
+      // Use OrderItem instead of OrderItems
       price: item.price,
       product: item.product,
       quantity: item.quantity,
@@ -62,7 +63,6 @@ const createOrder = async (user, shippAddress) => {
   await createdOrder.save();
   return createdOrder;
 };
-
 
 const placeOrder = async (orderId) => {
   const order = await findOrderById(orderId);
@@ -101,6 +101,7 @@ const findOrderById = async (orderId) => {
     .populate("user")
     .populate({ path: "orderItems", populate: { path: "product" } })
     .populate("shippingAddress");
+  console.log("orders=-=-=-0", order);
   return order;
 };
 

@@ -138,7 +138,7 @@ export default function Product_Details() {
             <div className="overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem]">
               <img
                 alt={product.images[0].alt}
-                src={store.product.product.msg?.imageUrl}
+                src={store.product.product?.msg?.imageUrl}
                 className="h-full w-full object-cover object-center"
               />
             </div>
@@ -162,10 +162,10 @@ export default function Product_Details() {
           <div className="lg:col-span-1 max-auto max-w-2xl px-4 pb-16 sm:px-6 lg:max-w-7xl lg:px-8 lg:pb-24">
             <div className="lg:col-span-2 ">
               <h1 className="text-2xl lg:text-xl font-semibold text-gray-900">
-                {store.product.product.msg?.brand}
+                {store.product.product?.msg?.brand}
               </h1>
               <h1 className="text-lg lg:text-xl text-gray-900 opacity-60 pt-1">
-                {store.product.product.msg?.title}
+                {store.product.product?.msg?.title}
               </h1>
             </div>
 
@@ -175,13 +175,13 @@ export default function Product_Details() {
 
               <div className="flex space-x-5 items-center text-lg lg:text-xl text-gray-900 mt-6">
                 <p className="font-semibold">
-                  {store.product.product.msg?.discountedPrice}
+                  {store.product.product?.msg?.discountedPrice}
                 </p>
                 <p className="opacity-50 line-through">
-                  {store.product.product.msg?.price}
+                  {store.product.product?.msg?.price}
                 </p>
                 <p className="text-green-600 font-semibold">
-                  {store.product.product.msg?.discountedPersent}
+                  {store.product.product?.msg?.discountedPersent}
                 </p>
               </div>
 

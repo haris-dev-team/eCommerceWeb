@@ -1,8 +1,12 @@
 import { Box, Button, Grid, TextField } from "@mui/material";
 import React from "react";
 import Address_Card from "../Cards/Address_Card";
-
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { createOrder } from "../../State/Order/Action";
 const DeliveryAddress = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -17,6 +21,8 @@ const DeliveryAddress = () => {
       mobile: data.get("phoneNumber"),
     };
     console.log("address", address);
+    const orderData = { address, navigate };
+    dispatch(createOrder(orderData));
   };
 
   return (
@@ -47,7 +53,7 @@ const DeliveryAddress = () => {
                     required
                     id="firstName"
                     label="First Name"
-                    name="lastName"
+                    name="firstName"
                     autoComplete="given-name"
                   />
                 </Grid>
