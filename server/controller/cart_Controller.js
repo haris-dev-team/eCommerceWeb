@@ -10,7 +10,7 @@ const findUserCart = async (req, res) => {
   }
 };
 const addItemToCart = async (req, res) => {
-  const user = req.user;
+  const user = await req.user;
 
   try {
     const cartItem = await addCartItem(user._id, req.body);

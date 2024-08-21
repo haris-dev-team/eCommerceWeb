@@ -2,25 +2,27 @@ import React, { useEffect } from "react";
 import Cart_Item from "../components/cart/Cart_Item";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCart } from "../State/Cart/Action";
 
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { cart } = useSelector((store) => store);
+  console.log("cart", cart.cart.msg);
   const handleCheckOut = () => {
     navigate("/check-out?step=2");
   };
   useEffect(() => {
-    dispatch(getCart())
-  },[])
+    dispatch(getCart());
+  }, []);
   return (
     <div>
       <div className="lg:grid grid-cols-3 lg:px-16 relative">
         <div className="col-span-2">
-          {[1, 1, 1, 1, 1].map((item, i) => (
+          {cart.cart.msg?.cartItems.map((item, i) => (
             <div key={i}>
-              <Cart_Item />
+              <Cart_Item item={item} />
             </div>
           ))}
         </div>
@@ -33,18 +35,20 @@ const Cart = () => {
             <div className="space-y-3 font-semibold px-5">
               <div className="flex justify-between pt-3 text-black">
                 <span>Price</span>
-                <span>$418</span>
+                <span>${cart.cart.msg?.totalPrice}</span>
               </div>
               <div className="flex justify-between pt-3 text-black">
                 <span>Discount</span>
-                <span className="text-green-600">-$218</span>
+                <span className="text-green-600">
+                  -${cart.cart.msg?.discount}
+                </span>
               </div>
               <div className="flex justify-between pt-3 text-black">
                 <span>Delivery Charges</span>
                 <span className="text-green-600">Free</span>
               </div>
               <div className="flex justify-between pt-3 text-black">
-                <span>Total Amount</span>
+                <span>{cart.cart.msg?.totalDiscountedPrice}</span>
                 <span classname="text-green-600">$718</span>
               </div>
             </div>

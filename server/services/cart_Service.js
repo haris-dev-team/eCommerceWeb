@@ -17,12 +17,20 @@ const findUserCarts = async (userId) => {
     let cart = await Cart.findOne({ user: userId });
 
     if (!cart) {
-      // If no cart found, create a new cart for the user
-      cart = new Cart({ user: userId });
-      await cart.save(); // Save the newly created cart
+      cart = new Cart({
+        user: userId,
+        cartItems: [],
+        totalPrice: 0,
+        totalItem: 0,
+        totalDiscountedPrice: 0,
+        discount: 0,
+      });
+      await cart.save();
     }
 
-    const cartItems = await CartItem.find({ cart: cart._id });
+    const cartItems = await CartItem.find({ cart: cart._id }).populate(
+      "product"
+    );
 
     cart.cartItems = cartItems;
 
@@ -30,35 +38,48 @@ const findUserCarts = async (userId) => {
     let discountedPrice = 0;
     let totalItem = 0;
 
-    for (let cartItem of cart.cartItems) {
-      totalPrice += cartItem.price;
-      discountedPrice += cartItem.discountedPrice;
+    cart.cartItems.forEach((cartItem) => {
+      totalPrice += cartItem.price * cartItem.quantity;
+      discountedPrice += cartItem.discountedPrice * cartItem.quantity;
       totalItem += cartItem.quantity;
-    }
+    });
 
     cart.totalPrice = totalPrice;
     cart.totalItem = totalItem;
     cart.discount = totalPrice - discountedPrice;
 
-    return cart; // Return the cart with updated values
+    await cart.save();
+
+    return cart;
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
 const addCartItem = async (userId, req) => {
-  console.log("user---==", userId);
   try {
     let cart = await Cart.findOne({ user: userId });
+
     if (!cart) {
-      cart = new Cart({ user: userId });
+      cart = new Cart({
+        user: userId,
+        cartItems: [],
+        totalPrice: 0,
+        totalItem: 0,
+        totalDiscountedPrice: 0,
+        discount: 0,
+      });
       await cart.save();
     }
 
     if (!mongoose.Types.ObjectId.isValid(req.productId)) {
       throw new Error("Invalid product ID.");
     }
+
     const product = await Product.findById(req.productId);
+    if (!product) {
+      throw new Error("Product not found.");
+    }
 
     const isPresent = await CartItem.findOne({
       cart: cart._id,
@@ -69,7 +90,6 @@ const addCartItem = async (userId, req) => {
     if (isPresent) {
       isPresent.quantity += 1;
       await isPresent.save();
-      return "Item quantity updated in cart";
     } else {
       const cartItem = new CartItem({
         product: product._id,
@@ -83,9 +103,29 @@ const addCartItem = async (userId, req) => {
 
       const createdCartItem = await cartItem.save();
       cart.cartItems.push(createdCartItem);
-      await cart.save();
-      return "Item Added to Cart";
     }
+
+    let totalPrice = 0;
+    let discountedPrice = 0;
+    let totalItem = 0;
+
+    cart.cartItems = await CartItem.find({ cart: cart._id }).populate(
+      "product"
+    ); // Populate product details
+
+    cart.cartItems.forEach((cartItem) => {
+      totalPrice += cartItem.price * cartItem.quantity;
+      discountedPrice += cartItem.discountedPrice * cartItem.quantity;
+      totalItem += cartItem.quantity;
+    });
+
+    cart.totalPrice = totalPrice;
+    cart.totalItem = totalItem;
+    cart.discount = totalPrice - discountedPrice;
+
+    await cart.save();
+
+    return "Item added or updated in the cart";
   } catch (error) {
     throw new Error(error.message);
   }
