@@ -12,7 +12,7 @@ const orderRoutes = require("./routes/order_Route");
 const reviewRoutes = require("./routes/review_Route");
 const ratingRoutes = require("./routes/rating_Route");
 const adminOrderRotes = require("./routes/admin_Order_Route");
-
+const payment = require("./routes/payment_Route");
 require("dotenv").config();
 
 app.use(cors());
@@ -33,6 +33,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/ratings", ratingRoutes);
 app.use("/api/admin/orders", adminOrderRotes);
+app.use("/api", payment);
 
 connectdb();
 app.listen(process.env.PORT, () => {

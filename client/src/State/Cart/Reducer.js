@@ -14,7 +14,7 @@ import {
 } from "./ActionType";
 
 const initialState = {
-  cart: null,
+  cart: [],
   loading: false,
   error: null,
   cartItems: [],
@@ -50,13 +50,13 @@ export const cartReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        deleteCartItem: action.payload
+        deleteCartItem: action.payload,
       };
     case UPDATE_CART_ITEM_SUCCESS:
       return {
         ...state,
         loading: false,
-        updateCartItem: action.payload
+        updateCartItem: action.payload,
       };
     case REMOVE_CART_ITEM_FAILURE:
     case UPDATE_CART_ITEM_FAILURE:
