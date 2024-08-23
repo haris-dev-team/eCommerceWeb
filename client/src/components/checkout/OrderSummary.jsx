@@ -33,10 +33,11 @@ const OrderSummary = () => {
 
       const cartItems = cart?.cart?.msg?.cartItems;
 
+      // Make sure your API request is sending the correct data structure expected by the backend
       const response = await axios.post(
         "http://localhost:2001/api/payment",
         {
-          product: cartItems,
+          product_data: cartItems, // Sending cart items as product_data
           currency: "pkr",
         },
         {
@@ -44,12 +45,16 @@ const OrderSummary = () => {
             Authorization: `Bearer ${
               import.meta.env.VITE_REACT_APP_STRIPE_SECRET_KEY
             }`,
-            "Content-Type": "application/json",
           },
         }
       );
 
+      // Ensure the response has sessionId
       const { sessionId } = response.data;
+
+      if (!sessionId) {
+        throw new Error("Session ID is missing from the response");
+      }
 
       // Redirect to checkout
       const result = await stripe.redirectToCheckout({ sessionId });
@@ -61,6 +66,7 @@ const OrderSummary = () => {
       console.error("Error during checkout:", error);
     }
   };
+
   return (
     <div>
       <div className="p-5 shadow-lg rounded-s-md border">

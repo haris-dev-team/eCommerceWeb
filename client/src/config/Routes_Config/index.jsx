@@ -13,6 +13,8 @@ import Cart from "../../pages/Cart";
 import Checkout from "../../pages/Checkout";
 import Order from "../../pages/order/Order";
 import Order_Details from "../../pages/order/Order_Details";
+import Cancel from "../../pages/Cancel";
+import Success from "../../pages/Success";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,6 +29,8 @@ const router = createBrowserRouter(
       <Route path="/check-out" element={<Checkout />} />
       <Route path="/account/order" element={<Order />} />
       <Route path="/account/order/:orderId" element={<Order_Details />} />
+      <Route path="/cancel" element={<Cancel />} />
+      <Route path="/success" element={<Success />} />
     </Route>
   )
 );
