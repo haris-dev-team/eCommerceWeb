@@ -45,11 +45,17 @@ const stripe = require("stripe")(
 );
 
 const create_Checkout_Session = async (req, res) => {
-  const { product_data } = req.body;
-  console.log("products", product_data);
+  const { product_data, userEmail, userName } = req.body; // Ensure userEmail and userName are passed from frontend
 
   try {
     if (product_data) {
+      // Create a new customer
+      const customer = await stripe.customers.create({
+        email: userEmail, // user's email address
+        name: userName, // user's name
+      });
+
+      // Prepare line items
       const lineItems = product_data.map((item) => ({
         price_data: {
           currency: "pkr",
@@ -62,19 +68,21 @@ const create_Checkout_Session = async (req, res) => {
         quantity: item.quantity,
       }));
 
+      // Create checkout session
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: lineItems,
         mode: "payment",
+        customer: customer.id, // Assign the created customer
         success_url: "http://localhost:5173/success",
         cancel_url: "http://localhost:5173/cancel",
       });
 
-      console.log("session", session);
+      console.log("Session Created: ", session);
       return res.status(200).json({ success: true, sessionId: session.id });
     } else {
-      console.log("product not found!");
-      return res.json({ success: false, message: "Product not found" });
+      console.log("Product data not found!");
+      return res.json({ success: false, message: "Product data not found" });
     }
   } catch (error) {
     console.log("Error creating checkout session:", error.message);

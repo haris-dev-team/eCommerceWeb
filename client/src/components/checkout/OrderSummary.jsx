@@ -21,7 +21,7 @@ const OrderSummary = () => {
   useEffect(() => {
     dispatch(getCart());
     dispatch(getOrderById(orderId));
-  }, [dispatch, orderId]);
+  }, [dispatch, orderId, cart.updateCartItem, cart.deleteCartItem]);
 
   console.log(import.meta.env.VITE_REACT_APP_STRIPE_SECRET_KEY);
 
@@ -39,6 +39,8 @@ const OrderSummary = () => {
         {
           product_data: cartItems, // Sending cart items as product_data
           currency: "pkr",
+          userEmail: "hh063063063@gmail.com",
+          userName: "Haris",
         },
         {
           headers: {
@@ -102,7 +104,9 @@ const OrderSummary = () => {
                 </div>
                 <div className="flex justify-between pt-3 text-black">
                   <span>Total Amount</span>
-                  <span>${order.order?.msg?.totalDiscountedPrice}</span>
+                  <span>
+                    ${order.order?.msg?.totalPrice - order.order?.msg?.discount}
+                  </span>
                 </div>
               </div>
               <Button
