@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const register = async (req, res) => {
   try {
     const user = await createUser(req.body);
+    console.log(user);
     const jwt = generateToken(user._id);
 
     return res

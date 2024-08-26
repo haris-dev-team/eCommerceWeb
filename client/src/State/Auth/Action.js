@@ -60,6 +60,7 @@ const getUserFailure = (error) => ({ type: GET_USER_FAILURE, payload: error });
 
 export const getUser = (jwt) => async (dispatch) => {
   dispatch(getUserRequest());
+  const jwt = localStorage.getItem("jwt")
   try {
     const response = await axios.get(`${API_BASE_URL}/api/users/profile`, {
       headers: {
@@ -67,7 +68,6 @@ export const getUser = (jwt) => async (dispatch) => {
       },
     });
     const user = response.data;
-    console.log("userget ", user);
 
     dispatch(getUserSuccess(user));
   } catch (error) {

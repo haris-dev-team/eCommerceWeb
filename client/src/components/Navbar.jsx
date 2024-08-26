@@ -9,13 +9,12 @@ import {
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
-// import { navigation } from "../../config/navigationMenu";
 import { useDispatch, useSelector } from "react-redux";
 import { deepPurple } from "@mui/material/colors";
-import TextField from "@mui/material/TextField";
+import { getUser, logout } from "../State/Auth/Action";
+import { getCart } from "../State/Cart/Action";
 import { navigation } from "../utils/Navigation";
 import AuthModel from "../pages/Auth/AuthModel";
-import { getUser, logout } from "../State/Auth/Action";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -24,13 +23,20 @@ function classNames(...classes) {
 export default function Navigation() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { auth, cart } = useSelector((store) => store);
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const openUserMenu = Boolean(anchorEl);
-  const location = useLocation();
-  const { auth } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
-  const dispatch = useDispatch();
+  const location = useLocation();
+  useEffect(() => {
+    if (jwt) {
+      dispatch(getUser(jwt));
+      dispatch(getCart(jwt));
+    }
+  }, [jwt]);
+
   const handleUserClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -46,40 +52,29 @@ export default function Navigation() {
   };
 
   const handleCategoryClick = (category, section, item, close) => {
-    navigate(`/${category.id}/${section.id}/${item.id}`);
+    navigate(`/${category._id}/${section._id}/${item._id}`);
     close();
   };
 
-  useEffect(
-    (jwt) => {
-      dispatch(getUser(jwt));
-    },
-    [jwt, auth.jwt]
-  );
   useEffect(() => {
-    console.log(auth);
     if (auth.user) {
       handleClose();
-    } else {
-      console.log("user not found!");
     }
-    if (location.pathname == "/login" || location.pathname == "/register") {
+    if (location.pathname === "/login" || location.pathname === "/register") {
       navigate(-1);
     }
-  }, [, auth.user]);
-
-  const handleMyOrderClick = () => {
-    // handleCloseUserMenu();
-    // auth.user?.role === "ROLE_ADMIN"
-    //   ? navigate("/admin")
-    //   : navigate("/account/order");
-  };
+  }, [auth.user]);
 
   const handleLogout = () => {
-    dispatch(logout());
     handleCloseUserMenu();
+    dispatch(logout());
   };
-
+  const handleMyOrderClick = () => {
+    handleCloseUserMenu();
+    auth.user?.user?.role === "ADMIN"
+      ? navigate("/admin")
+      : navigate("/account/order");
+  };
   return (
     <div className="bg-white pb-10">
       {/* Mobile menu */}
@@ -425,9 +420,17 @@ export default function Navigation() {
                           cursor: "pointer",
                         }}
                       >
-                        {auth.user.user?.firstName[0].toUpperCase()}
+                        {auth.user?.user?.firstName[0].toUpperCase()}
                       </Avatar>
-
+                      {/* <Button
+                        id="basic-button"
+                        aria-controls={open ? "basic-menu" : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? "true" : undefined}
+                        onClick={handleUserClick}
+                      >
+                        Dashboard
+                      </Button> */}
                       <Menu
                         id="basic-menu"
                         anchorEl={anchorEl}
@@ -438,9 +441,9 @@ export default function Navigation() {
                         }}
                       >
                         <MenuItem onClick={handleMyOrderClick}>
-                          {/* {auth.user?.role === "ROLE_ADMIN"
+                          {auth.user?.user?.role === "ADMIN"
                             ? "Admin Dashboard"
-                            : "My Orders"} */}
+                            : "My Orders"}
                         </MenuItem>
                         <MenuItem onClick={handleLogout}>Logout</MenuItem>
                       </Menu>
@@ -481,7 +484,7 @@ export default function Navigation() {
                       aria-hidden="true"
                     />
                     <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                      {/* {cart.cart?.totalItem} */}
+                      {cart.cart?.msg?.totalItem}
                     </span>
                     <span className="sr-only">items in cart, view bag</span>
                   </Button>

@@ -15,13 +15,9 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteProduct, findProducts } from "../../State/Product/Action";
 
-const Products_Table = () => {
+const ProductsTableView = () => {
   const dispatch = useDispatch();
   const { product } = useSelector((state) => state);
-
-  const handleProductDelete = (productId) => {
-    dispatch(deleteProduct(productId));
-  };
 
   useEffect(() => {
     const data = {
@@ -37,7 +33,7 @@ const Products_Table = () => {
       stock: "",
     };
     dispatch(findProducts(data));
-  }, [product.deletedProduct]);
+  }, []);
 
   return (
     <div className="p-5  text-white h-dvh">
@@ -52,11 +48,10 @@ const Products_Table = () => {
                 <TableCell align="left">Category</TableCell>
                 <TableCell align="left">Price</TableCell>
                 <TableCell align="left">Quantity</TableCell>
-                <TableCell align="left">Delete</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {product?.products?.msg?.content?.map((item) => (
+              {product?.products?.msg?.content?.slice(0,5).map((item) => (
                 <TableRow
                   key={item.name}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -68,14 +63,6 @@ const Products_Table = () => {
                   <TableCell align="left">{item.category.name}</TableCell>
                   <TableCell align="left">{item.price}</TableCell>
                   <TableCell align="left">{item.quantity}</TableCell>
-                  <TableCell align="left">
-                    <Button
-                      onClick={() => handleProductDelete(item._id)}
-                      variant="outlined"
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -86,4 +73,4 @@ const Products_Table = () => {
   );
 };
 
-export default Products_Table;
+export default ProductsTableView;

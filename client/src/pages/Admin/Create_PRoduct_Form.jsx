@@ -30,7 +30,7 @@ const Create_PRoduct_Form = () => {
     size: initialSize,
     quantity: "",
     topLavelCategory: "",
-    secondavelCategory: "",
+    secondLavelCategory: "",
     thirdLavelCategory: "",
     description: "",
   });
@@ -60,7 +60,6 @@ const Create_PRoduct_Form = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(createProduct(productData));
-    console.log("form", productData);
   };
 
   return (

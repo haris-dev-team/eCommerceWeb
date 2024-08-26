@@ -1,92 +1,124 @@
-import { Button, Grid, TextField } from "@mui/material";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import {
+  Button,
+  Grid,
+  TextField,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from "@mui/material";
+import { useDispatch } from "react-redux";
+import { register } from "../../State/Auth/Action";
 import { useNavigate } from "react-router-dom";
-import { getUser, register } from "../../State/Auth/Action";
 
 const Register = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt");
-  const { auth } = useSelector((store) => store);
+  const navigate = useNavigate()
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    role: "CUSTOMER", // default role
+    mobile: "",
+  });
 
-  useEffect(() => {
-    if (jwt) {
-      dispatch(getUser(jwt));
-    }
-  }, [jwt, auth.jwt]);
- 
-  const onsubmitHandle = (e) => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-
-    const userData = {
-      firstName: data.get("firstName"),
-      lastName: data.get("lastName"),
-      email: data.get("email"),
-      password: data.get("password"),
-    };
-    dispatch(register(userData));
-    console.log("userData",userData);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(register(formData));
+    console.log("Form Submitted", formData);
+  };
+
   return (
-    <div>
-      <form onSubmit={onsubmitHandle}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              required
-              id="firstName"
-              name="firstName"
-              label="First Name"
-              fullWidth
-              autoComplete="given-name"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              required
-              id="lastName"
-              name="lastName"
-              label="Last Name"
-              fullWidth
-              autoComplete="given-name"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              id="email"
-              name="email"
-              label="Email"
-              fullWidth
-              autoComplete="given-name"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              id="password"
-              name="password"
-              label="Password"
-              fullWidth
-              autoComplete="password"
-              type="password"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              className="bg-[#9155fd] w-full"
-              type="submit"
-              variant="contained"
-              sx={{ padding: "0.8rem 0", bgColor: "#9155fd" }}
-              size="large"
-            >
-              Register
-            </Button>
-          </Grid>
+    <form onSubmit={handleSubmit}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            id="firstName"
+            name="firstName"
+            label="First Name"
+            fullWidth
+            value={formData.firstName}
+            onChange={handleChange}
+          />
         </Grid>
-      </form>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            id="lastName"
+            name="lastName"
+            label="Last Name"
+            fullWidth
+            value={formData.lastName}
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            required
+            id="email"
+            name="email"
+            label="Email"
+            fullWidth
+            value={formData.email}
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            required
+            id="password"
+            name="password"
+            label="Password"
+            fullWidth
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="mobile"
+            name="mobile"
+            label="Mobile"
+            fullWidth
+            value={formData.mobile}
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <RadioGroup
+            row
+            aria-label="role"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+          >
+            <FormControlLabel
+              value="CUSTOMER"
+              control={<Radio />}
+              label="Customer"
+            />
+            <FormControlLabel value="ADMIN" control={<Radio />} label="Admin" />
+          </RadioGroup>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            className="bg-[#9155fd] w-full"
+            type="submit"
+            variant="contained"
+            sx={{ padding: "0.8rem 0" }}
+            size="large"
+          >
+            Register
+          </Button>
+        </Grid>
+      </Grid>
       <div className="flex justify-center flex-col items-center">
         <div className="py-3 flex items-center">
           <p>if you don't have account?</p>
@@ -99,7 +131,7 @@ const Register = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 

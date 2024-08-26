@@ -66,7 +66,7 @@ export const createProduct = (product) => async (dispatch) => {
     console.log("data ---- ", data);
     dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: data });
   } catch (error) {
-    console.log("dataError ---- ", error.message);
+    console.log("dataError ---- ", error);
     dispatch({ type: CREATE_PRODUCT_FAILURE, payload: error.message });
   }
 };

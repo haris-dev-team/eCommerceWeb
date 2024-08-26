@@ -16,7 +16,7 @@ const TrophyImg = styled("img")({
 const Acheivment = () => {
   return (
     <div>
-      <Card sx={{ position: "relative", bgcolor: "#242B2E", color: "white" }}>
+      <Card sx={{ position: "relative" }}>
         <CardContent>
           <Typography variant="h6" sx={{ letterSpacing: ".25px" }}>
             Shop with Haris

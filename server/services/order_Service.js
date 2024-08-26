@@ -131,9 +131,13 @@ const getAllOrder = async () => {
 
 const deleteOrder = async (orderId) => {
   const order = await findOrderById(orderId);
-  await Order.findByIdAndDelete(order._id);
+  if (order) {
+    await Order.findByIdAndDelete(order._id);
+    return order; // Return the deleted order for confirmation
+  } else {
+    throw new Error("Order not found");
+  }
 };
-
 module.exports = {
   createOrder,
 

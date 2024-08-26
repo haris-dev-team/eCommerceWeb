@@ -16,5 +16,5 @@ router.put("/:orderId/confirmed", authenticate, confirmOrder);
 router.put("/:orderId/ship", authenticate, shippOrder);
 router.put("/:orderId/deliver", authenticate, deliverdOrder);
 router.put("/:orderId/cancel", authenticate, cancelOrder);
-router.put("/:orderId/delete", authenticate, deletedOrder);
+router.delete("/:orderId/delete", authenticate, deletedOrder);
 module.exports = router;

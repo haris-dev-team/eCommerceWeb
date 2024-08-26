@@ -10,7 +10,7 @@ const {
 const getAllOrders = async (req, res) => {
   try {
     const orders = await getAllOrder();
-    return res.status(200).json({ success: true, msg:orders });
+    return res.status(200).json({ success: true, msg: orders });
   } catch (error) {
     return res.status(500).json({ success: false, msg: error.message });
   }
@@ -19,7 +19,7 @@ const confirmOrder = async (req, res) => {
   const orderId = req.params.orderId;
   try {
     const orders = await confirmedOrder(orderId);
-    return res.status(200).json({ success: true, msg:orders });
+    return res.status(200).json({ success: true, msg: orders });
   } catch (error) {
     return res.status(500).json({ success: false, msg: error.message });
   }
@@ -28,7 +28,7 @@ const shippOrder = async (req, res) => {
   const orderId = req.params.orderId;
   try {
     const orders = await shipOrder(orderId);
-    return res.status(200).json({ success: true, msg:orders });
+    return res.status(200).json({ success: true, msg: orders });
   } catch (error) {
     return res.status(500).json({ success: false, msg: error.message });
   }
@@ -56,9 +56,12 @@ const cancelOrder = async (req, res) => {
 
 const deletedOrder = async (req, res) => {
   const orderId = req.params.orderId;
+  console.log("order-- -- ", orderId);
   try {
-    const orders = await deleteOrder(orderId);
-    return res.status(200).json({ success: true, msg: orders });
+    const order = await deleteOrder(orderId);
+    return res
+      .status(200)
+      .json({ success: true, msg: "Order deleted successfully", order });
   } catch (error) {
     return res.status(500).json({ success: false, msg: error.message });
   }
