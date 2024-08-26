@@ -1,12 +1,20 @@
 import { Alert, AlertTitle, Grid } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import Order_Tracker from "../components/Order/Order_Tracker";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Address_Card from "../components/Cards/Address_Card";
+import { getOrderById } from "../State/Order/Action";
 
 const Success = () => {
+  const orderId = localStorage.getItem("orderId");
+  const dispatch = useDispatch();
+
   const { order } = useSelector((state) => state);
-  console.log(order);
+  console.log("sad", order.order.msg.orderItems);
+  useEffect(() => {
+    dispatch(getOrderById(orderId));
+  }, [orderId]);
+
   return (
     <div className="px-2 lg:px-36">
       <div className="flex flex-col justify-center items-center">
@@ -21,10 +29,12 @@ const Success = () => {
       </div>
       <Order_Tracker activestep={1} />
       <Grid container className="space-y-5 py-5 pt-20">
-        {order?.order?.msg?.cartItems.map((item, i) => (
+        {order?.order?.msg?.orderItems.map((item, i) => (
           <Grid
             container
             item
+            className="shadow-xl rounded-md p-5"
+            key={i}
             sx={{ alignItems: "center", justifyContent: "center" }}
           >
             <Grid item xs={6}>

@@ -13,17 +13,15 @@ const OrderSummary = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const orderId = searchParams.get("order_id");
   const { cart } = useSelector((state) => state);
   const { order } = useSelector((state) => state);
   console.log(cart);
+  const orderId = searchParams.get("order_id");
 
   useEffect(() => {
     dispatch(getCart());
     dispatch(getOrderById(orderId));
   }, [dispatch, orderId, cart.updateCartItem, cart.deleteCartItem]);
-
-  console.log(import.meta.env.VITE_REACT_APP_STRIPE_SECRET_KEY);
 
   const handleCheckOut = async () => {
     try {
@@ -35,12 +33,10 @@ const OrderSummary = () => {
 
       // Make sure your API request is sending the correct data structure expected by the backend
       const response = await axios.post(
-        "http://localhost:2001/api/payment",
+        `http://localhost:2001/api/payment`,
         {
           product_data: cartItems, // Sending cart items as product_data
           currency: "pkr",
-          userEmail: "hh063063063@gmail.com",
-          userName: "Haris",
         },
         {
           headers: {
@@ -59,6 +55,9 @@ const OrderSummary = () => {
       }
 
       // Redirect to checkout
+
+      localStorage.setItem("orderId", orderId);
+
       const result = await stripe.redirectToCheckout({ sessionId });
 
       if (result.error) {

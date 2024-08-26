@@ -45,15 +45,12 @@ const stripe = require("stripe")(
 );
 
 const create_Checkout_Session = async (req, res) => {
-  const { product_data, userEmail, userName } = req.body; // Ensure userEmail and userName are passed from frontend
+  const { product_data, userEmail, userName } = req.body;
+  const { orderId } = req.params;
 
   try {
     if (product_data) {
       // Create a new customer
-      const customer = await stripe.customers.create({
-        email: userEmail, // user's email address
-        name: userName, // user's name
-      });
 
       // Prepare line items
       const lineItems = product_data.map((item) => ({
@@ -73,7 +70,6 @@ const create_Checkout_Session = async (req, res) => {
         payment_method_types: ["card"],
         line_items: lineItems,
         mode: "payment",
-        customer: customer.id, // Assign the created customer
         success_url: "http://localhost:5173/success",
         cancel_url: "http://localhost:5173/cancel",
       });

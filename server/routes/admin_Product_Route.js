@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post("/", authenticate, createProducts);
 router.post("/creates", authenticate, createMultipleProduct);
-router.delete("/:id", authenticate, deleteProducts);
+router.delete("/:id/delete", authenticate, deleteProducts);
 router.put("/:id", authenticate, updateProducts);
 
 module.exports = router;
