@@ -9,7 +9,7 @@ const Home = () => {
       <Hero_Carousel />
 
       <div className="space-y-10 py-20 flex flex-col justify-center px-5 lg:px-10">
-        <Home_Cards_Carousel data={mens_Kurta} sectionName={"Men's Kurta"} />
+        <Home_Cards_Carousel data={mens_Kurta} sectionName={"Men's jgjhg"} />
         <Home_Cards_Carousel data={mens_Kurta} sectionName={"Men's Shoes"} />
         <Home_Cards_Carousel data={mens_Kurta} sectionName={"Men's Shirt"} />
         <Home_Cards_Carousel data={mens_Kurta} sectionName={"Women's Saree"} />
